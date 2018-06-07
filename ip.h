@@ -13,6 +13,7 @@
 #define IP_H
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -23,6 +24,7 @@
 
 #define HDR_SIZE 20
 #define DEFAULT_ID 1234
+#define DEFAULT_TTL 123
 
 /* Structures */
 
@@ -38,13 +40,12 @@ typedef struct ip
 	uint16_t chksum;
 	uint32_t src;
 	uint32_t dst;
-}
+} IP;
 
 /* Functions */
 
 uint16_t calculate_chsksum(void *buf);
-IP *construct_ip_hdr(struct sockaddr_in *src, struct sockaddr_in *dst);
-void send_pkt(int s, void *pkt, struct sockaddr_in *dst);
-void *recv_pkt(int s, struct sockaddr_in *dst);
+IP *construct_ip_hdr(struct sockaddr_in *src, struct sockaddr_in *dst, int proto);
+void send_pkt(int s, void *pkt, int size, struct sockaddr_in *dst);
 
 #endif
