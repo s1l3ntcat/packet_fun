@@ -21,6 +21,21 @@ int get_header_size(int proto)
 	 }
 }
 
+void *get_header(int proto, struct args *a)
+{
+	void *hdr = NULL;
+	switch (proto) 
+	 {
+		case IPPROTO_ICMP:
+			hdr = (void *) construct_icmp_hdr();
+			if (!hdr)
+				return NULL;
+			break;
+	 }
+
+	return hdr;
+}
+
 void *create_pkt(struct sockaddr_in *src, struct sockaddr_in *dst, int proto)
 {
 	
@@ -34,19 +49,19 @@ void *create_pkt(struct sockaddr_in *src, struct sockaddr_in *dst, int proto)
 
 	memset(pkt, 0, pkt_size);
 	IP *ip = construct_ip_hdr(src, dst, proto);
-	ICMP *icmp = construct_icmp_hdr();
-	if (!ip || !icmp)
+	void *hdr = get_header(proto, NULL);
+	if (!ip || !hdr)
 	 {
 		perror("malloc");
 		if (ip) free(ip);
-		if (icmp) free(icmp);
+		if (hdr) free(hdr);
 		free(pkt);
 		return NULL;
 	 }
 
 	memcpy(pkt, ip, sizeof(IP));
-	memcpy(pkt + sizeof(IP), icmp, header_size);
+	memcpy(pkt + sizeof(IP), hdr, header_size);
 	free(ip);
-	free(icmp);
+	free(hdr);
 	return pkt;
 }

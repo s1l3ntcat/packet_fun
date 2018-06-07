@@ -44,7 +44,7 @@ typedef struct ip
 
 /* Functions */
 
-uint16_t calculate_chsksum(void *buf);
+uint16_t calculate_checksum(void *buf);
 IP *construct_ip_hdr(struct sockaddr_in *src, struct sockaddr_in *dst, int proto);
 void send_pkt(int s, void *pkt, int size, struct sockaddr_in *dst);
 
